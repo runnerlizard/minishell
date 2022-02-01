@@ -20,11 +20,14 @@ int	main(int argc, char **argv, char **envp)
 	(void) argv;
 	(void) envp;
 	init_global();
-	line = readline(MINISHELL_PROMPT);
-	if (line != NULL)
+	while (1)
 	{
-		execute_command(line);
-		free(line);
+		line = readline(MINISHELL_PROMPT);
+		if (line != NULL)
+		{
+			execute_command(line);
+			free(line);
+		}
 	}
 	free_global();
 	return (g_global.exit_status);

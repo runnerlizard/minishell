@@ -8,7 +8,7 @@ CC			=	gcc
 
 CFLAGS		=	-Werror -Wall -Wextra -g -O2 -I $(HEADER) -lreadline
 
-SRCS		=	minishell.c \
+SRCS		=	main.c \
 				utils/error.c \
 				utils/utils.c \
 				utils/kv.c \
