@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeanett <mjeanett@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Cluco <cluco@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 21:13:12 by mjeanett          #+#    #+#             */
-/*   Updated: 2022/01/29 14:48:50 by mjeanett         ###   ########.fr       */
+/*   Updated: 2022/02/02 13:38:04 by Cluco            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,17 @@ void	ft_echo_util(char **args, int i)
 	}
 }
 
-void	ft_echo(char **args)
+void	ft_echo(char **args, int fd1, int fd2)
 {
 	int	i;
+	int tmpfd;
 	int	newline;
 
+	tmpfd = dup(1);
+	if (fd1 > 0)
+		dup2(fd1, 0);
+	if (fd2 > 0)
+		dup2(fd2, 1);
 	i = 1;
 	newline = 1;
 	while (args[i] && ft_strncmp("-n", args[i], 2) == 0)
@@ -57,5 +63,6 @@ void	ft_echo(char **args)
 	ft_echo_util(args, i);
 	if (newline)
 		ft_putchar_fd('\n', 1);
+	dup2(tmpfd, 1);
 	g_global.exit_status = SUCCESS;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeanett <mjeanett@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Cluco <cluco@student.21-school.ru>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/27 19:22:36 by mjeanett          #+#    #+#             */
-/*   Updated: 2022/01/27 19:28:59 by mjeanett         ###   ########.fr       */
+/*   Updated: 2022/02/02 13:22:35 by Cluco            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	*xmalloc(size_t size);
 
 void	execute_command(char *command);
 
-void		ft_echo(char **args);
+void		ft_echo(char **args, int fd1, int fd2);
 void		ft_cd(char **args);
 void		ft_env(char **args);
 void		ft_export(char **args);
