@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeanett <mjeanett@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 20:32:49 by mjeanett          #+#    #+#             */
-/*   Updated: 2022/01/29 15:13:44 by mjeanett         ###   ########.fr       */
+/*   Updated: 2022/03/09 18:25:25 by cluco            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 void	ft_pwd(void)
 {
-	char	pwd[PATH_MAX];
+	char	pwd[1024];
 
-	g_global.exit_status = SUCCESS;
-	if (getcwd(pwd, PATH_MAX) == NULL)
+	exit_status = 1;
+	if (getcwd(pwd, 1024) == NULL)
 	{
-		print_builtin_error("pwd", NULL, NULL);
+		print_builtin_error("pwd", NULL, strerror(errno));
 		return ;
 	}
 	ft_putendl_fd(pwd, 1);

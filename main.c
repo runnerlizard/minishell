@@ -3,39 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Cluco <cluco@student.21-school.ru>         +#+  +:+       +#+        */
+/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/16 22:45:55 by sbronwyn          #+#    #+#             */
-/*   Updated: 2022/02/02 13:25:03 by Cluco            ###   ########.fr       */
+/*   Created: 2022/03/04 13:11:57 by cluco             #+#    #+#             */
+/*   Updated: 2022/03/10 14:11:44 by cluco            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+static char **init_env(char **env)
+{
+	int		i;
+	char	**e;
+
+	i = 0;
+	while (env[i])
+		i++;
+	e = xmalloc(sizeof(char *) * ++i);
+	i = -1;
+	while (env[++i])
+		e[i] = ft_strdup(env[i]);
+	e[i] = NULL;
+	return (e);
+}
+
+static int	only_tabs(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != 0)
+	{
+		if (s[i] == 10 || s[i] == 32 || s[i] == 11)
+			i++;
+		else
+			return (0);
+	}
+	return (1);
+}
+
+int	main(int argc, char **argv, char **env)
 {
 	char	*line;
-	char	*tmp[2];
-	
-	tmp[0] = "echo";
-	tmp[1] = "dsfhksdf";
+	char	*nl;
+	char	**e;
 
-	(void) argc;
 	(void) argv;
-	(void) envp;
-	int fd2 = open("ardfkldf", O_TRUNC | O_CREAT | O_WRONLY, 0664);
-	ft_echo(tmp, -1, fd2);
-	init_global();
-	while (1)
+	exit_status = 0;
+	e = init_env(env);
+	while (argc >= 0)
 	{
-		line = readline(MINISHELL_PROMPT);
+		line = readline("minishell$ ");
 		rl_redisplay();
-		if (line != NULL)
+		if (ft_strlen(line) > 0 && only_tabs(line) == 0)
 		{
-			execute_command(line);
+			add_history(line);
+			nl = replace_var(line, env);
 			free(line);
+			parse_execute(nl, e);
+			free(nl);
 		}
+		else
+			free(line);
 	}
-	free_global();
-	return (g_global.exit_status);
+	return (0);
 }

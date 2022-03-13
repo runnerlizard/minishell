@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjeanett <mjeanett@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 22:47:33 by mjeanett          #+#    #+#             */
-/*   Updated: 2022/01/29 15:17:02 by mjeanett         ###   ########.fr       */
+/*   Updated: 2022/03/09 18:25:25 by cluco            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int	ft_strar_index(char **ar, const char *str, const char *sep)
 {
 	int	i;
 
+	(void) sep;
 	i = 0;
 	while (ar[i])
 	{
@@ -39,6 +40,7 @@ int	ft_strar_index(char **ar, const char *str, const char *sep)
 		}
 		i++;
 	}
+	printf("here");
 	if (str == NULL)
 		return (i);
 	return (-1);
@@ -56,7 +58,7 @@ void	ft_strar_free(char **ar)
 	free (ar);
 }
 
-void	del_entry(int i)
+void	del_entry(int i, char **env)
 {
 	char	**ar;
 	int		j;
@@ -64,33 +66,38 @@ void	del_entry(int i)
 
 	j = 0;
 	k = 0;
-	ar = (char **)ft_calloc(ft_strar_size(&g_global.env), sizeof(char *));
-	while (j < ft_strar_size(&g_global.env))
+	ar = (char **)calloc(ft_strar_size(env), sizeof(char *));
+	while (j < ft_strar_size(env))
 	{
 		if (j != i)
-			ar[k++] = ft_strdup(&g_global.env[j]);
+			ar[k++] = ft_strdup(env[j]);
 		j++;
 	}
-	ft_strar_free(&g_global.env);
-	g_global.env = *ar;
+	// ft_strar_free(env);
+	printf("delentr");
+	while (k >= 0)
+	{
+		env[k] = ar[k];
+		k--;
+	}
 }
 
-void	ft_unset(char **args)
+void	ft_unset(char **args, char **env)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	g_global.exit_status = SUCCESS;
+	exit_status = 1;
 	while (args[i])
 	{
 		if (ft_isdigit(args[i][0]) || ft_count_char(args[i], NAMESETTING) \
 			!= (int)ft_strlen(args[i]))
-			print_builtin_error("unset", args[i], NTV_IDENT);
-		else if (ft_strar_index(&g_global.env, args[i], "=") >= 0)
+			print_builtin_error("unset", args[i], "not a valid identifier");
+		else if (ft_strar_index(env, args[i], "=") >= 0)
 		{
-			j = ft_strar_index(&g_global.env, args[i], "=");
-			del_entry(j);
+			j = ft_strar_index(env, args[i], "=");
+			del_entry(j, env);
 		}
 		i++;
 	}
