@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lizard <lizard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 13:11:57 by cluco             #+#    #+#             */
-/*   Updated: 2022/03/10 14:11:44 by cluco            ###   ########.fr       */
+/*   Updated: 2022/03/28 22:24:37 by lizard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
-static char **init_env(char **env)
+static char	**init_env(char **env)
 {
 	int		i;
 	char	**e;
@@ -48,6 +48,7 @@ int	main(int argc, char **argv, char **env)
 	char	*line;
 	char	*nl;
 	char	**e;
+	char	*wild;
 
 	(void) argv;
 	exit_status = 0;
@@ -59,9 +60,10 @@ int	main(int argc, char **argv, char **env)
 		if (ft_strlen(line) > 0 && only_tabs(line) == 0)
 		{
 			add_history(line);
-			nl = replace_var(line, env);
-			free(line);
-			parse_execute(nl, e);
+			wild = wildcard(line);
+			nl = replace_var(wild, env);
+			free(wild);
+			e = parse_execute(nl, e);
 			free(nl);
 		}
 		else

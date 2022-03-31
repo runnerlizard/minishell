@@ -20,6 +20,9 @@ SRCS		=	main.c \
 				parser/run_execve.c \
 				parser/run_cmd.c \
 				parser/replace_var.c \
+				parser/std_fd.c \
+				parser/get_arg.c \
+				parser/wildcard.c \
 				builtins/builtins.c \
 				builtins/pwd.c \
 				builtins/echo.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lizard <lizard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/23 22:47:33 by mjeanett          #+#    #+#             */
-/*   Updated: 2022/03/09 18:25:25 by cluco            ###   ########.fr       */
+/*   Updated: 2022/03/21 19:41:18 by lizard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ int	ft_strar_index(char **ar, const char *str, const char *sep)
 		}
 		i++;
 	}
-	printf("here");
 	if (str == NULL)
 		return (i);
 	return (-1);
@@ -74,7 +73,6 @@ void	del_entry(int i, char **env)
 		j++;
 	}
 	// ft_strar_free(env);
-	printf("delentr");
 	while (k >= 0)
 	{
 		env[k] = ar[k];

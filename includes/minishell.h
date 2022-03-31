@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lizard <lizard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/27 19:22:36 by mjeanett          #+#    #+#             */
-/*   Updated: 2022/03/11 18:37:50 by cluco            ###   ########.fr       */
+/*   Updated: 2022/03/28 22:58:10 by lizard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,27 +41,28 @@ typedef struct s_cmd
 	char 		**e;
 	int			fd1[2];
 	int			fd2[2];
-	int			fdstd[2];
-	int			heredoc;
+	int			*std_fd;
 }	t_cmd;
 
 void		*xmalloc(size_t size);
 
-void		parse_execute(char *command, char **env);
+void		set_std_fd(t_cmd *c);
+int			*save_std(t_cmd *c);
+char		**parse_execute(char *command, char **env);
 void		launcher(t_cmd *c);
 void		*free_all(t_cmd *c, char *s, char *message);
 char		**redirects_cut_off(char *s, t_cmd *c);
 void		run_execve(t_cmd *c, char **ex);
 void		run_cmd(t_cmd *c, int i);
-void		run_built(t_cmd *c, char **ex);
 void   		check_extra_arrows(t_cmd *c, char ch);
 void		heredoc(char *s, int *i, t_cmd *c);
 void 		input(char *s, int *j, t_cmd *c);
 void 		durakskii_redirect(char *s, int *j, t_cmd *c);
-int 		append(char *s, int *j, t_cmd *c);
 void 		output(char *s, int *j, t_cmd *c);
 char 		*get_arg(char *s, int *k);
 int 		rotate_quotes_and_text(char *s, int i);
+char 		*wildcard(char *s);
+int			get_next_line(char **line, int fd);
 
 void		ft_echo(char **args);
 void		ft_cd(char **args, char **env);

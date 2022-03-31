@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replace_var.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lizard <lizard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 17:03:06 by cluco             #+#    #+#             */
-/*   Updated: 2022/03/09 19:33:04 by cluco            ###   ########.fr       */
+/*   Updated: 2022/03/28 23:06:16 by lizard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,15 @@ static char	*check_in_env(char *s, char **env)
 
 	i = -1;
 	while (env[++i])
+	{
 		if (ft_strncmp(s, env[i], ft_strlen(s)) == 0)
 		{
 			j = ft_strlen(s) + 1;
 			free(s);
-			return (ft_substr(env[i], j, ft_strlen(ft_strchr(env[i], '=') - 1)));
+			return (ft_substr(env[i], j,
+					ft_strlen(ft_strchr(env[i], '=') - 1)));
 		}
+	}
 	free(s);
 	tmp = malloc(1);
 	tmp[0] = 0;
@@ -36,7 +39,7 @@ static char	*dollar(char *s, int *j, char **env)
 {
 	size_t	i;
 
-	if (s[2] == '?')
+	if (s[1] == '?')
 	{
 		*j = *j + 2;
 		return (ft_itoa(exit_status));
@@ -72,7 +75,7 @@ static char	*durakskaya_kavichka(char *s, int *j)
 	return (ft_substr(s, 1, i - 1));
 }
 
-char  *replace_var(char *s, char **env)
+char	*replace_var(char *s, char **env)
 {
 	int		i;
 	char	*nl;

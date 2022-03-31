@@ -3,31 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   launcher.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lizard <lizard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 16:52:38 by cluco             #+#    #+#             */
-/*   Updated: 2022/03/11 18:22:56 by cluco            ###   ########.fr       */
+/*   Updated: 2022/03/28 18:11:09 by lizard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	run_built(t_cmd *c, char **ex)
-{
-	int	i;
-	
-	run_builtin(ex, c->e);
-	i = 0;
-	while (ex[i] != NULL)
-		free(ex[i++]);
-	free(ex);
-	// free_all(c, "19846", NULL);
-}
-
 static void	launch_single_cmd(t_cmd *c)
 {
 	char	**ex;
 	pid_t	pid;
+	int		i;
 
 	ex = redirects_cut_off(c->cmd[0], c);
 	if (is_builtin(ex) == 0)
@@ -42,7 +31,12 @@ static void	launch_single_cmd(t_cmd *c)
 				return ;
 	}
 	else
-		run_built(c, ex);
+		run_builtin(ex, c->e);
+	set_std_fd(c);
+	i = 0;
+	while (ex[i] != NULL)
+		free(ex[i++]);
+	free(ex);
 }
 
 static void	launch_multiple(t_cmd *c)

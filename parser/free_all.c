@@ -3,21 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   free_all.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lizard <lizard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 14:37:22 by Cluco             #+#    #+#             */
-/*   Updated: 2022/03/11 17:06:32 by cluco            ###   ########.fr       */
+/*   Updated: 2022/03/29 00:24:21 by lizard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	get_next_line(char **line, int fd)
+{
+	int		rd;
+	int		i;
+	char	ch;
+	char	*buffer;
+
+	buffer = malloc(100000);
+	*line = buffer;
+	i = 0;
+	rd = read(fd, &ch, 1);
+	while (rd > 0 && ch != '\n')
+	{
+		buffer[i++] = ch;
+		rd = read(fd, &ch, 1);
+	}
+	buffer[i] = '\0';
+	return (rd);
+}
+
+static void	free_all2(char *s, int i, t_cmd *c)
+{
+	int	j;
+
+	if (s[i] == '7')
+		free(c->path);
+	else if (s[i] == '8')
+		free(c->type);
+	else if (s[i] == '9')
+	{
+		free(c->std_fd);
+		j = -1;
+		while (c->e[++j] != NULL)
+			free(c->e[j]);
+		free(c->e);
+	}
+	else if (s[i] == '0')
+	{
+		unlink("clucoheredoc");
+		exit(errno);
+	}
+}
 
 void	*free_all(t_cmd *c, char *s, char *message)
 {
 	int	i;
 	int	j;
 
-	if (message != NULL)
+	if (message != NULL && ft_strlen(message) > 10)
+		ft_putstr_fd(message, 2);
+	else if (message != NULL)
 		perror(message);
 	i = -1;
 	while (s[++i])
@@ -31,24 +76,7 @@ void	*free_all(t_cmd *c, char *s, char *message)
 		}
 		else if (s[i] == '4')
 			free(c);
-		else if (s[i] == '6')
-		 	unlink("clucomjeanettmpfile");
-		else if (s[i] == '7')
-			free(c->path);
-		else if (s[i] == '8')
-			free(c->type);
-		else if (s[i] == '9')
-		{
-			j = -1;
-			while (c->e[++j] != NULL)
-				free(c->e[j]);
-			free(c->e);
-		}
-		else if (s[i] == '0')
-		{
-			unlink("clucoheredoc");
-			exit(errno);
-		}
+		free_all2(s, i, c);
 	}
 	return (NULL);
 }

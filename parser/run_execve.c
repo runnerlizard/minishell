@@ -3,74 +3,78 @@
 /*                                                        :::      ::::::::   */
 /*   run_execve.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cluco <cluco@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lizard <lizard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:41:55 by cluco             #+#    #+#             */
-/*   Updated: 2022/03/11 18:31:04 by cluco            ###   ########.fr       */
+/*   Updated: 2022/03/28 23:01:49 by lizard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	path_to_struct(pid_t pid, t_cmd *c, char **ex)
+static char	*there_is_path(char *s, char **dirs)
 {
-	int	tmp_fd;
-	
-	if (waitpid(pid, NULL, 0) < 0)
-		free_all(c, "198460", strerror(errno));
-	c->path = xmalloc(100);
-	tmp_fd = open("clucomjeanettmpfile", O_RDONLY);
-	if (tmp_fd < 0)
-		free_all(c, "1978460", strerror(errno));
-	tmp_fd = read(tmp_fd, c->path, 100);
-	if (tmp_fd < 1)
+	int		i;
+	char	*path;
+	char	*tmp;
+
+	i = -1;
+	while (dirs[++i])
 	{
-		c->path = ex[0];
-		unlink("clucomjeanettmpfile");
-		return ;
+		tmp = ft_strjoin(dirs[i], "/");
+		free (dirs[i]);
+		dirs[i] = tmp;
+		path = ft_strjoin(dirs[i], s);
+		if (access(path, X_OK) == 0)
+		{
+			i = -1;
+			while (dirs[++i])
+				free (dirs[i]);
+			free (dirs);
+			return (path);
+		}
+		free (path);
 	}
-	tmp_fd = 0;
-	while (c->path[tmp_fd] != '\n')
-		tmp_fd++;
-	c->path[tmp_fd] = 0;
-	unlink("clucomjeanettmpfile");
+	return (s);
 }
 
-static void	get_path(t_cmd *c, char **ex)
+static char	*get_path(char *s, char **env)
 {
-	int		tmp_fd;
-	pid_t	pid;
-	char	*args[3];
-	
-	pid = fork();
-	if (pid == 0)
+	int		i;
+	char	**tmp;
+	char	*dir;
+
+	if (ft_strchr(s, '/'))
+		return (s);
+	i = -1;
+	while (env[++i])
 	{
-		args[0] = "which";
-		args[1] = ex[0];
-		args[2] = NULL;
-		tmp_fd = open("clucomjeanettmpfile", O_TRUNC | O_CREAT | O_RDWR, 0664);
-		if (tmp_fd < 0 || dup2(tmp_fd, 1) < 0)
-			free_all(c, "19840", strerror(errno));
-		execve("/usr/bin/which", args, c->e);
-		free_all(c, "198640", strerror(errno));
+		if (ft_strncmp(env[i], "PATH", 4) == 0)
+		{
+			tmp = ft_split(env[i], '=');
+			dir = ft_strdup(tmp[1]);
+			i = -1;
+			while (tmp[++i])
+				free (tmp[i]);
+			free (tmp);
+			tmp = ft_split(dir, ':');
+			free (dir);
+			return (there_is_path(s, tmp));
+		}
 	}
-	else if (pid > 0)
-		path_to_struct(pid, c, ex);
-	else
-		free_all(c, "19840", strerror(errno));
+	return (s);
 }
 
 void	run_execve(t_cmd *c, char **ex)
 {
 	int	i;
 
-	get_path(c, ex);
-	unlink("clucoheredoc");
+	c->path = get_path(ex[0], c->e);
 	execve(c->path, ex, c->e);
-	free_all(c, "19846", "execve");
 	i = 0;
 	while (ex[i] != NULL)
 		free(ex[i++]);
 	free(ex);
+	free_all(c, "198460", c->path);
 	exit (0);
 }
